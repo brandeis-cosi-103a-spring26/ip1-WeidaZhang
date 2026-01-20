@@ -1,0 +1,3 @@
+cd /workspaces/ip1-WeidaZhang/ip1
+mvn -q -U clean compile
+
