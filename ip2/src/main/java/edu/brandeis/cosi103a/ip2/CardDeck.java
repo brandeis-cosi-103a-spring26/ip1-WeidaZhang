@@ -1,11 +1,12 @@
 package edu.brandeis.cosi103a.ip2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * CardDeck manages the collection of all cards available in the game.
- * Includes both Automation cards and Cryptocurrency cards with their quantities.
+ * Initializes and manages the master deck of all 160 cards used in the game.
+ * Card distribution: 14 Method, 8 Module, 8 Framework, 60 Bitcoin, 40 Ethereum, 30 Dogecoin
  */
 public class CardDeck {
     private List<Card> cards;
@@ -15,11 +16,8 @@ public class CardDeck {
         initializeCards();
     }
 
-    /**
-     * Initialize all cards in the game deck.
-     */
     private void initializeCards() {
-        // Automation Cards
+        // Automation Cards: 14 Method + 8 Module + 8 Framework = 30 cards
         for (int i = 0; i < 14; i++) {
             cards.add(new AutomationCard("Method", 2, 1));
         }
@@ -30,7 +28,7 @@ public class CardDeck {
             cards.add(new AutomationCard("Framework", 8, 6));
         }
 
-        // Cryptocurrency Cards
+        // Cryptocurrency Cards: 60 Bitcoin + 40 Ethereum + 30 Dogecoin = 130 cards
         for (int i = 0; i < 60; i++) {
             cards.add(new CryptocurrencyCard("Bitcoin", 0, 1));
         }
@@ -40,37 +38,35 @@ public class CardDeck {
         for (int i = 0; i < 30; i++) {
             cards.add(new CryptocurrencyCard("Dogecoin", 6, 3));
         }
+
+        // Total: 160 cards
     }
 
-    /**
-     * Get all cards in the deck.
-     * @return list of all cards
-     */
     public List<Card> getCards() {
         return new ArrayList<>(cards);
     }
 
-    /**
-     * Get the total number of cards in the deck.
-     * @return size of the deck
-     */
     public int getSize() {
         return cards.size();
     }
 
-    /**
-     * Print information about all cards in the deck.
-     */
-    public void printDeck() {
-        System.out.println("=== Game Deck ===");
-        System.out.println("Total cards: " + getSize());
-        System.out.println("\nAutomation Cards:");
-        System.out.println("  - Method x14 (cost: 2, value: 1)");
-        System.out.println("  - Module x8 (cost: 5, value: 3)");
-        System.out.println("  - Framework x8 (cost: 8, value: 6)");
-        System.out.println("\nCryptocurrency Cards:");
-        System.out.println("  - Bitcoin x60 (cost: 0, value: 1)");
-        System.out.println("  - Ethereum x40 (cost: 3, value: 2)");
-        System.out.println("  - Dogecoin x30 (cost: 6, value: 3)");
+    public Card getCard(String name) {
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getName().equals(name)) {
+                return cards.remove(i);
+            }
+        }
+        return null;
+    }
+
+    public List<Card> getCards(String name, int count) {
+        List<Card> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            Card card = getCard(name);
+            if (card != null) {
+                result.add(card);
+            }
+        }
+        return result;
     }
 }

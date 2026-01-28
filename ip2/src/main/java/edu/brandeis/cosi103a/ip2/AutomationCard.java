@@ -1,25 +1,18 @@
 package edu.brandeis.cosi103a.ip2;
 
 /**
- * Automation cards represent development automation tools.
- * They have a cost (in cryptocoins) and a value (in APs - automation points).
+ * Represents an Automation Card that contributes to the final Automation Points (AP) score.
+ * These are development tools like Method, Module, and Framework.
  */
 public class AutomationCard extends Card {
+    private int apValue;
 
-    public AutomationCard(String name, int cost, int value) {
-        super(name, cost, value);
+    public AutomationCard(String name, int cost, int apValue) {
+        super(name, cost, apValue);
+        this.apValue = apValue;
     }
 
-    /**
-     * Get the AP value of this automation card.
-     * @return the number of APs this card is worth at the end of the game
-     */
     public int getAPValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "Automation: " + super.toString();
+        return apValue;
     }
 }

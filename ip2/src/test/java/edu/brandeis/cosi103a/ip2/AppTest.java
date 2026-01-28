@@ -1,11 +1,9 @@
 package edu.brandeis.cosi103a.ip2;
 
+import static org.junit.Assert.*;
+
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -6,92 +6,93 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GameSupply manages the shared supply of cards available for purchase.
- * Players can buy cards from the supply to add to their personal decks.
+ * Manages the shared supply of purchaseable cards available to all players.
  */
 public class GameSupply {
-    private Map<String, List<Card>> supply;
-    private CardDeck masterDeck;
+    private List<Card> templates;  // Template cards for creating new instances
+    private Map<String, Integer> quantities;  // Track remaining quantity of each card type
 
     public GameSupply() {
-        this.supply = new HashMap<>();
-        this.masterDeck = new CardDeck();
+        this.templates = new ArrayList<>();
+        this.quantities = new HashMap<>();
         initializeSupply();
     }
 
-    /**
-     * Initialize the supply with cards from the master deck.
-     */
     private void initializeSupply() {
-        for (Card card : masterDeck.getCards()) {
-            String cardName = card.getName();
-            supply.putIfAbsent(cardName, new ArrayList<>());
-            supply.get(cardName).add(card);
-        }
+        // Create template cards and track quantities
+        // Automation Cards: 14 Method + 8 Module + 8 Framework = 30 cards
+        templates.add(new AutomationCard("Method", 2, 1));
+        quantities.put("Method", 14);
+        
+        templates.add(new AutomationCard("Module", 5, 3));
+        quantities.put("Module", 8);
+        
+        templates.add(new AutomationCard("Framework", 8, 6));
+        quantities.put("Framework", 8);
+
+        // Cryptocurrency Cards: 60 Bitcoin + 40 Ethereum + 30 Dogecoin = 130 cards
+        templates.add(new CryptocurrencyCard("Bitcoin", 0, 1));
+        quantities.put("Bitcoin", 60);
+        
+        templates.add(new CryptocurrencyCard("Ethereum", 3, 2));
+        quantities.put("Ethereum", 40);
+        
+        templates.add(new CryptocurrencyCard("Dogecoin", 6, 3));
+        quantities.put("Dogecoin", 30);
     }
 
-    /**
-     * Get a card from the supply by name, if available.
-     * @param cardName the name of the card to purchase
-     * @return the card if available, null otherwise
-     */
-    public Card getCard(String cardName) {
-        List<Card> cards = supply.get(cardName);
-        if (cards != null && cards.size() > 0) {
-            return cards.remove(0);
+    public Card getCard(String name) {
+        // Check if card type exists and has quantity remaining
+        Integer qty = quantities.get(name);
+        if (qty != null && qty > 0) {
+            quantities.put(name, qty - 1);
+            
+            // Find template and create new instance
+            for (Card card : templates) {
+                if (card.getName().equals(name)) {
+                    if (card instanceof AutomationCard) {
+                        AutomationCard template = (AutomationCard) card;
+                        return new AutomationCard(template.getName(), template.getCost(), template.getValue());
+                    } else if (card instanceof CryptocurrencyCard) {
+                        CryptocurrencyCard template = (CryptocurrencyCard) card;
+                        return new CryptocurrencyCard(template.getName(), template.getCost(), template.getValue());
+                    }
+                }
+            }
         }
         return null;
     }
 
-    /**
-     * Get multiple cards of the same type from supply.
-     * @param cardName the name of the card
-     * @param quantity the number of cards needed
-     * @return list of cards, or empty list if not enough available
-     */
-    public List<Card> getCards(String cardName, int quantity) {
+    public List<Card> getCards(String name, int count) {
         List<Card> result = new ArrayList<>();
-        List<Card> cards = supply.get(cardName);
-        if (cards != null && cards.size() >= quantity) {
-            for (int i = 0; i < quantity; i++) {
-                result.add(cards.remove(0));
+        for (int i = 0; i < count; i++) {
+            Card card = getCard(name);
+            if (card != null) {
+                result.add(card);
+            } else {
+                break; // No more cards available
             }
         }
         return result;
     }
 
-    /**
-     * Check if a card is available in the supply.
-     * @param cardName the name of the card
-     * @return true if at least one copy is available
-     */
-    public boolean hasCard(String cardName) {
-        List<Card> cards = supply.get(cardName);
-        return cards != null && cards.size() > 0;
+    public boolean hasCard(String name) {
+        Integer qty = quantities.get(name);
+        return qty != null && qty > 0;
     }
 
-    /**
-     * Get the quantity available for a specific card.
-     * @param cardName the name of the card
-     * @return number of copies available
-     */
-    public int getQuantity(String cardName) {
-        List<Card> cards = supply.get(cardName);
-        return cards != null ? cards.size() : 0;
+    public int getQuantity(String name) {
+        Integer qty = quantities.get(name);
+        return qty != null ? qty : 0;
     }
 
-    /**
-     * Print the current supply status.
-     */
     public void printSupply() {
-        System.out.println("=== Game Supply ===");
-        System.out.println("Automation Cards:");
-        System.out.println("  - Method: " + getQuantity("Method") + " available");
-        System.out.println("  - Module: " + getQuantity("Module") + " available");
-        System.out.println("  - Framework: " + getQuantity("Framework") + " available");
-        System.out.println("Cryptocurrency Cards:");
-        System.out.println("  - Bitcoin: " + getQuantity("Bitcoin") + " available");
-        System.out.println("  - Ethereum: " + getQuantity("Ethereum") + " available");
-        System.out.println("  - Dogecoin: " + getQuantity("Dogecoin") + " available");
+        System.out.println("=== Supply ===");
+        System.out.println("Method: " + getQuantity("Method"));
+        System.out.println("Module: " + getQuantity("Module"));
+        System.out.println("Framework: " + getQuantity("Framework"));
+        System.out.println("Bitcoin: " + getQuantity("Bitcoin"));
+        System.out.println("Ethereum: " + getQuantity("Ethereum"));
+        System.out.println("Dogecoin: " + getQuantity("Dogecoin"));
     }
 }

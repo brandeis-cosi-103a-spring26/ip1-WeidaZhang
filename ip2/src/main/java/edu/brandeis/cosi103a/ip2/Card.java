@@ -1,7 +1,8 @@
 package edu.brandeis.cosi103a.ip2;
 
 /**
- * Abstract base class for all cards in the game.
+ * Abstract base class for all cards in the Dominion-style card game.
+ * Cards can be either Automation Cards (contribute to final AP score) or Cryptocurrency Cards (generate money).
  */
 public abstract class Card {
     protected String name;
@@ -24,10 +25,5 @@ public abstract class Card {
 
     public int getValue() {
         return value;
-    }
-
-    @Override
-    public String toString() {
-        return name + " (Cost: " + cost + ", Value: " + value + ")";
     }
 }
